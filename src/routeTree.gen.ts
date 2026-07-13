@@ -10,11 +10,23 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ToolsIndexRouteImport } from './routes/tools/index'
+import { Route as ToolsSlugRouteImport } from './routes/tools/$slug'
 import { Route as ApiGenerateToolRouteImport } from './routes/api/generate/$tool'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsIndexRoute = ToolsIndexRouteImport.update({
+  id: '/tools/',
+  path: '/tools/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsSlugRoute = ToolsSlugRouteImport.update({
+  id: '/tools/$slug',
+  path: '/tools/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiGenerateToolRoute = ApiGenerateToolRouteImport.update({
@@ -25,27 +37,35 @@ const ApiGenerateToolRoute = ApiGenerateToolRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/tools/$slug': typeof ToolsSlugRoute
+  '/tools/': typeof ToolsIndexRoute
   '/api/generate/$tool': typeof ApiGenerateToolRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/tools/$slug': typeof ToolsSlugRoute
+  '/tools': typeof ToolsIndexRoute
   '/api/generate/$tool': typeof ApiGenerateToolRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/tools/$slug': typeof ToolsSlugRoute
+  '/tools/': typeof ToolsIndexRoute
   '/api/generate/$tool': typeof ApiGenerateToolRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/generate/$tool'
+  fullPaths: '/' | '/tools/$slug' | '/tools/' | '/api/generate/$tool'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/generate/$tool'
-  id: '__root__' | '/' | '/api/generate/$tool'
+  to: '/' | '/tools/$slug' | '/tools' | '/api/generate/$tool'
+  id: '__root__' | '/' | '/tools/$slug' | '/tools/' | '/api/generate/$tool'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ToolsSlugRoute: typeof ToolsSlugRoute
+  ToolsIndexRoute: typeof ToolsIndexRoute
   ApiGenerateToolRoute: typeof ApiGenerateToolRoute
 }
 
@@ -56,6 +76,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/': {
+      id: '/tools/'
+      path: '/tools'
+      fullPath: '/tools/'
+      preLoaderRoute: typeof ToolsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/$slug': {
+      id: '/tools/$slug'
+      path: '/tools/$slug'
+      fullPath: '/tools/$slug'
+      preLoaderRoute: typeof ToolsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/generate/$tool': {
@@ -70,6 +104,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ToolsSlugRoute: ToolsSlugRoute,
+  ToolsIndexRoute: ToolsIndexRoute,
   ApiGenerateToolRoute: ApiGenerateToolRoute,
 }
 export const routeTree = rootRouteImport
